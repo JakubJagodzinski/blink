@@ -11,15 +11,18 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun FlashcardScreen(
-    viewModel: StudyViewModel = viewModel()
+    viewModel: StudyViewModel = hiltViewModel()
 ) {
+    val state = viewModel.state.collectAsState().value
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -28,12 +31,12 @@ fun FlashcardScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "${viewModel.currentIndex + 1} / ${viewModel.totalFlashcards}",
+                text = "${state.currentIndex + 1} / ${state.flashcards.size}",
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
             LinearProgressIndicator(
-                progress = { (viewModel.currentIndex + 1) / viewModel.totalFlashcards.toFloat() },
+                progress = { (state.currentIndex + 1) / state.flashcards.size.toFloat() },
                 modifier = Modifier,
                 color = ProgressIndicatorDefaults.linearColor,
                 trackColor = ProgressIndicatorDefaults.linearTrackColor,
@@ -43,16 +46,18 @@ fun FlashcardScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             FlashcardCard(
-                flashcard = viewModel.currentFlashcard,
-                isFlipped = viewModel.isFlipped,
+                flashcard = viewModel.getCurrentFlashcard(),
+                isFlipped = state.isFlipped,
                 onClick = { viewModel.flipCard() }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(onClick = { viewModel.nextCard() }) {
-                Text("Next")
-            }
+            Button(
+                onClick = { viewModel.nextCard() },
+                enabled = state.alreadyFlipped
+            ) { Text("Next") }
         }
     }
+
 }

@@ -18,7 +18,7 @@ import com.example.flashcards.data.Flashcard
 
 @Composable
 fun FlashcardCard(
-    flashcard: Flashcard,
+    flashcard: Flashcard?,
     isFlipped: Boolean,
     onClick: () -> Unit
 ) {
@@ -42,7 +42,7 @@ fun FlashcardCard(
             contentAlignment = Alignment.Center
         ) {
             if (rotation <= 90f) {
-                Text(text = flashcard.front)
+                Text(text = flashcard?.front ?: "")
             } else {
                 Box(
                     modifier = Modifier
@@ -50,7 +50,7 @@ fun FlashcardCard(
                         .graphicsLayer { rotationY = 180f },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = flashcard.back)
+                    Text(text = flashcard?.back ?: "")
                 }
             }
         }
