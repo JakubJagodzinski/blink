@@ -87,4 +87,12 @@ class StudyViewModel @Inject constructor(
         }
     }
 
+    fun markAsKnown() {
+        nextCard()
+    }
+
+    fun markAsUnknown() {
+        nextCard()
+    }
+
 }
